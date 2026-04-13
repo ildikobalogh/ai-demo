@@ -320,6 +320,19 @@
   50% { transform: translate(-50%, -120%); }
 }
 
+    .hotspot.active {
+  width: 28px;
+  height: 28px;
+  opacity: 1;
+  background: rgba(178, 34, 34, 1);
+  box-shadow: 0 0 10px rgba(178,34,34,0.7);
+  z-index: 2;
+}
+
+.hotspot.inactive {
+  opacity: 0.3;
+}
+
     @media (max-width: 900px) {
       .scene-layout {
         grid-template-columns: 1fr;
@@ -714,33 +727,46 @@ btn.type = "button";
 
 if (scene.unlocked) {
   btn.addEventListener("click", () => openScene(scene.id));
+function renderMap() {
+  mapImage.src = ASSETS.map || ASSETS.fallbackImage;
+
+  mapWrap.querySelectorAll(".hotspot, .hotspot-label, .arrow")
+    .forEach(el => el.remove());
+
+  let arrowPlaced = false; 
 
   // NYÍL hozzáadása az aktív ponthoz
-  const arrow = document.createElement("div");
-  arrow.className = "arrow";
-  arrow.style.left = `${scene.x}%`;
-  arrow.style.top = `${scene.y}%`;
-  arrow.innerHTML = "▼";  
-  mapWrap.appendChild(arrow);
+  scenes.forEach(scene => {
+  if (scene.id.startsWith("camera")) return;
 
-} else {
-  btn.addEventListener("click", () => alert("Questo luogo è ancora bloccato."));
-}
-        const label = document.createElement("div");
-        label.className = "hotspot-label";
-        label.style.left = `${scene.x}%`;
-        label.style.top = `${scene.y}%`;
-        label.textContent = scene.label;
+  const btn = document.createElement("button");
+  btn.type = "button";
 
-        if (scene.unlocked) {
-          btn.addEventListener("click", () => openScene(scene.id));
-        } else {
-          btn.addEventListener("click", () => alert("Questo luogo è ancora bloccato."));
-        }
+  btn.style.left = `${scene.x}%`;
+  btn.style.top = `${scene.y}%`;
+  btn.title = scene.label;
 
-        mapWrap.appendChild(btn);
-        mapWrap.appendChild(label);
-      });
+  if (scene.unlocked) {
+    // EZ AZ AKTUÁLIS → ACTIVE
+    btn.className = "hotspot active";
+    btn.addEventListener("click", () => openScene(scene.id));
+
+    // CSAK IDE kerül a nyíl
+    const arrow = document.createElement("div");
+    arrow.className = "arrow";
+    arrow.style.left = `${scene.x}%`;
+    arrow.style.top = `${scene.y}%`;
+    arrow.innerHTML = "▼";
+    mapWrap.appendChild(arrow);
+
+  } else {
+    // MINDEN MÁS → INACTIVE
+    btn.className = "hotspot inactive";
+    btn.addEventListener("click", () => alert("Questo luogo è ancora bloccato."));
+  }
+
+  mapWrap.appendChild(btn);
+});
 
       updateProgress();
     }
