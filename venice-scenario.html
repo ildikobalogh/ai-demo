@@ -111,22 +111,37 @@
     }
 
     .hotspot {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  background: rgba(178, 34, 34, 0.95);
-  color: white;
-  border: 2px solid white;
-  border-radius: 999px;
-  width: 22px;
-  height: 22px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  opacity: 0.4;
-}
+      position: absolute;
+      transform: translate(-50%, -50%);
+      background: rgba(178, 34, 34, 0.95);
+      color: white;
+      border: 2px solid white;
+      border-radius: 999px;
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      opacity: 0.55;
+      z-index: 2;
+    }
+
     .hotspot.locked {
       background: rgba(120,120,120,0.85);
       cursor: not-allowed;
-      opacity: 0.4;
+      opacity: 0.35;
+    }
+
+    .hotspot.active {
+      width: 28px;
+      height: 28px;
+      opacity: 1;
+      background: rgba(178, 34, 34, 1);
+      box-shadow: 0 0 10px rgba(178,34,34,0.7);
+      z-index: 3;
+    }
+
+    .hotspot.inactive {
+      opacity: 0.3;
     }
 
     .hotspot-label {
@@ -304,34 +319,22 @@
     }
 
     .arrow {
-  position: absolute;
-  transform: translate(-50%, -100%);
-  animation: bounce 1s infinite;
-  pointer-events: none;
-  color: #b22222;
-  font-size: 64px;
-  text-shadow:
-    0 0 6px white,
-    0 3px 8px rgba(0,0,0,0.5);    
-}
+      position: absolute;
+      transform: translate(-50%, -100%);
+      animation: bounce 1s infinite;
+      pointer-events: none;
+      color: #b22222;
+      font-size: 64px;
+      text-shadow:
+        0 0 6px white,
+        0 3px 8px rgba(0,0,0,0.5);
+      z-index: 4;
+    }
 
-@keyframes bounce {
-  0%, 100% { transform: translate(-50%, -100%); }
-  50% { transform: translate(-50%, -120%); }
-}
-
-    .hotspot.active {
-  width: 28px;
-  height: 28px;
-  opacity: 1;
-  background: rgba(178, 34, 34, 1);
-  box-shadow: 0 0 10px rgba(178,34,34,0.7);
-  z-index: 2;
-}
-
-.hotspot.inactive {
-  opacity: 0.3;
-}
+    @keyframes bounce {
+      0%, 100% { transform: translate(-50%, -100%); }
+      50% { transform: translate(-50%, -120%); }
+    }
 
     @media (max-width: 900px) {
       .scene-layout {
@@ -458,26 +461,6 @@
         text: "Scegli = fai una scelta"
       }
     };
-
-    function renderInstructionBar(instructions) {
-      const instructionBar = document.getElementById("instructionBar");
-      instructionBar.innerHTML = "";
-
-      instructions.forEach(key => {
-        const item = document.createElement("button");
-        item.type = "button";
-        item.className = "inst";
-
-        let label = "";
-        if (key === "listen") label = "Ascolta";
-        if (key === "look") label = "Guarda";
-        if (key === "choose") label = "Scegli";
-
-        item.innerHTML = `<img src="${hintData[key].image}" class="icon" alt=""> ${label}`;
-        item.addEventListener("click", () => showHint(key));
-        instructionBar.appendChild(item);
-      });
-    }
 
     const scenes = [
       {
@@ -696,6 +679,26 @@
       hintOverlay.classList.add("show");
     }
 
+    function renderInstructionBar(instructions) {
+      const instructionBar = document.getElementById("instructionBar");
+      instructionBar.innerHTML = "";
+
+      instructions.forEach(key => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "inst";
+
+        let label = "";
+        if (key === "listen") label = "Ascolta";
+        if (key === "look") label = "Guarda";
+        if (key === "choose") label = "Scegli";
+
+        item.innerHTML = `<img src="${hintData[key].image}" class="icon" alt=""> ${label}`;
+        item.addEventListener("click", () => showHint(key));
+        instructionBar.appendChild(item);
+      });
+    }
+
     document.querySelectorAll(".hint-word").forEach(word => {
       word.addEventListener("click", () => {
         showHint(word.dataset.help);
@@ -713,60 +716,41 @@
 
     function renderMap() {
       mapImage.src = ASSETS.map || ASSETS.fallbackImage;
-      mapWrap.querySelectorAll(".hotspot, .hotspot-label").forEach(el => el.remove());
 
-      scenes.forEach(scene => {
-        if (scene.id.startsWith("camera")) return;
+      mapWrap.querySelectorAll(".hotspot, .hotspot-label, .arrow").forEach(el => el.remove());
 
+      const mapScenes = scenes.filter(scene => !scene.id.startsWith("camera"));
+      const activeScene = mapScenes.find(scene => scene.unlocked && !scene.completedOnce);
+
+      mapScenes.forEach(scene => {
         const btn = document.createElement("button");
-btn.className = `hotspot ${scene.unlocked ? "" : "locked"}`;
-btn.style.left = `${scene.x}%`;
-btn.style.top = `${scene.y}%`;
-btn.title = scene.label;
-btn.type = "button";
+        btn.type = "button";
+        btn.style.left = `${scene.x}%`;
+        btn.style.top = `${scene.y}%`;
+        btn.title = scene.label;
 
-if (scene.unlocked) {
-  btn.addEventListener("click", () => openScene(scene.id));
-function renderMap() {
-  mapImage.src = ASSETS.map || ASSETS.fallbackImage;
+        if (activeScene && scene.id === activeScene.id) {
+          btn.className = "hotspot active";
+          btn.addEventListener("click", () => openScene(scene.id));
 
-  mapWrap.querySelectorAll(".hotspot, .hotspot-label, .arrow")
-    .forEach(el => el.remove());
+          const arrow = document.createElement("div");
+          arrow.className = "arrow";
+          arrow.style.left = `${scene.x}%`;
+          arrow.style.top = `${scene.y}%`;
+          arrow.innerHTML = "▼";
+          mapWrap.appendChild(arrow);
+        } else if (scene.unlocked) {
+          btn.className = "hotspot";
+          btn.addEventListener("click", () => openScene(scene.id));
+        } else {
+          btn.className = "hotspot locked inactive";
+          btn.addEventListener("click", () => {
+            alert("Questo luogo è ancora bloccato.");
+          });
+        }
 
-  let arrowPlaced = false; 
-
-  // NYÍL hozzáadása az aktív ponthoz
-  scenes.forEach(scene => {
-  if (scene.id.startsWith("camera")) return;
-
-  const btn = document.createElement("button");
-  btn.type = "button";
-
-  btn.style.left = `${scene.x}%`;
-  btn.style.top = `${scene.y}%`;
-  btn.title = scene.label;
-
-  if (scene.unlocked) {
-    // EZ AZ AKTUÁLIS → ACTIVE
-    btn.className = "hotspot active";
-    btn.addEventListener("click", () => openScene(scene.id));
-
-    // CSAK IDE kerül a nyíl
-    const arrow = document.createElement("div");
-    arrow.className = "arrow";
-    arrow.style.left = `${scene.x}%`;
-    arrow.style.top = `${scene.y}%`;
-    arrow.innerHTML = "▼";
-    mapWrap.appendChild(arrow);
-
-  } else {
-    // MINDEN MÁS → INACTIVE
-    btn.className = "hotspot inactive";
-    btn.addEventListener("click", () => alert("Questo luogo è ancora bloccato."));
-  }
-
-  mapWrap.appendChild(btn);
-});
+        mapWrap.appendChild(btn);
+      });
 
       updateProgress();
     }
@@ -821,15 +805,28 @@ function renderMap() {
       feedbackBox.textContent = option.feedback;
       feedbackBox.classList.add("show");
 
+      if (!option.correct) {
+        nextBtn.style.display = "none";
+        backToMapBtn.style.display = "inline-block";
+
+        backToMapBtn.onclick = () => {
+          renderMap();
+          showScreen("map");
+        };
+        return;
+      }
+
       const isDebriefJump = scene.next === "debrief";
+      const nextScene = scenes.find(s => s.id === scene.next);
 
-      if (option.correct) {
-        const nextScene = scenes.find(s => s.id === scene.next);
-        if (nextScene) nextScene.unlocked = true;
+      if (nextScene) {
+        nextScene.unlocked = true;
+      }
 
-        if (!scene.completedOnce) {
-          scene.completedOnce = true;
-          if (scene.id !== "sospiri") completedCount++;
+      if (!scene.completedOnce) {
+        scene.completedOnce = true;
+        if (scene.id !== "sospiri") {
+          completedCount++;
         }
       }
 
@@ -842,7 +839,6 @@ function renderMap() {
         backToMapBtn.style.display = "inline-block";
 
         nextBtn.onclick = () => {
-          const nextScene = scenes.find(s => s.id === scene.next);
           if (nextScene && nextScene.id.startsWith("camera")) {
             openScene(nextScene.id);
           } else {
@@ -881,13 +877,23 @@ function renderMap() {
         scene.unlocked = index === 0;
         scene.completedOnce = false;
       });
+
       completedCount = 0;
+      currentSceneId = null;
+
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+
       renderMap();
       showScreen("intro");
       closeHint();
+      updateProgress();
     });
 
     renderMap();
+    updateProgress();
   </script>
 </body>
 </html>
