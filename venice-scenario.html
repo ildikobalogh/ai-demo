@@ -1,199 +1,443 @@
 <!DOCTYPE html>
+
 <html lang="it">
+
 <head>
+
   <meta charset="UTF-8" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Arrivo a Venezia - Lesson 1 Prototype</title>
+
   <style>
+
     * { box-sizing: border-box; }
+
     body { margin: 0; font-family: Arial, sans-serif; background: #f4f4f4; color: #222; }
+
     .app { max-width: 1100px; margin: 0 auto; padding: 20px; }
+
     .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+
     .title { font-size: 28px; font-weight: bold; }
+
     .progress { font-size: 14px; color: #666; }
+
     .screen { display: none; }
+
     .screen.active { display: block; }
+
     .card { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+
     .intro { text-align: center; padding: 40px 20px; }
+
     .intro h1 { margin-top: 0; font-size: 34px; }
+
     .intro-steps { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; margin: 20px 0 24px; }
+
     .intro-step { display: inline-flex; align-items: center; gap: 8px; color: #b22222; font-weight: 700; font-size: 22px; }
+
     .intro-step img { width: 28px; height: 28px; object-fit: contain; }
+
     .btn { border: none; background: #b22222; color: white; padding: 12px 18px; border-radius: 10px; cursor: pointer; font-size: 16px; }
+
     .btn.secondary { background: #444; }
+
     .btn.light { background: #e9e9e9; color: #222; }
+
     .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
     .icon-btn { display: inline-flex; align-items: center; gap: 8px; }
+
     .btn-icon { width: 18px; height: 18px; object-fit: contain; }
+
     .map-wrap { position: relative; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 16px; background: #ddd; }
+
     .map-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
     .hotspot { position: absolute; transform: translate(-50%, -50%); background: rgba(178,34,34,.95); border: 2px solid white; border-radius: 999px; width: 22px; height: 22px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.3); opacity: .55; z-index: 2; }
+
     .hotspot.locked { background: rgba(120,120,120,.85); cursor: not-allowed; opacity: .35; }
+
     .hotspot.active { width: 28px; height: 28px; opacity: 1; background: rgba(178,34,34,1); box-shadow: 0 0 10px rgba(178,34,34,.7); z-index: 3; }
+
     .arrow { position: absolute; transform: translate(-50%, -100%); animation: bounce 1s infinite; pointer-events: none; color: #b22222; font-size: 64px; text-shadow: 0 0 6px white, 0 3px 8px rgba(0,0,0,.5); z-index: 4; }
+
     @keyframes bounce { 0%,100% { transform: translate(-50%,-100%); } 50% { transform: translate(-50%,-120%); } }
+
     .scene-layout { display: grid; grid-template-columns: 1.15fr .85fr; gap: 18px; align-items: start; }
+
     .task-panel { display: flex; flex-direction: column; gap: 12px; }
-    .instruction-bar { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 4px; }
-    .inst { display: inline-flex; align-items: center; gap: 7px; font-size: 17px; font-weight: 700; color: #8f1d1d; background: #fff8d9; padding: 8px 14px; border-radius: 999px; border: 2px solid #b22222; cursor: pointer; }
-    .icon { width: 24px; height: 24px; object-fit: contain; }
+
+    .instruction-bar { display: flex; gap: 10px; justify-content: flex-start; flex-wrap: wrap; margin-left: 8px; }
+
+    .inst { display: inline-flex; align-items: center; gap: 7px; font-size: 16px; font-weight: 700; color: #8f1d1d; background: #fff8d9; padding: 7px 13px; border-radius: 999px; border: 2px solid #b22222; cursor: pointer; }
+
+    .icon { width: 22px; height: 22px; object-fit: contain; }
+
     .image-wrap { position: relative; border-radius: 14px; overflow: hidden; background: #f7f7f7; }
+
     .scene-image { width: 100%; display: block; object-fit: cover; max-height: 420px; }
+
     .target-highlight { position: absolute; border: 3px solid rgba(178,34,34,.85); border-radius: 999px; box-shadow: 0 0 12px rgba(178,34,34,.45); pointer-events: none; }
+
     .task-question { font-size: 22px; font-weight: 700; color: #222; text-align: center; margin: 2px 0 0; }
+
     .audio-row { display: flex; justify-content: center; margin: 2px 0 0; }
-    .options { display: grid; gap: 12px; margin-top: 38px; }
+
+    .options { display: grid; gap: 12px; margin-top: 28px; }
+
     .option-btn { width: 100%; text-align: left; padding: 14px 16px; border-radius: 12px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 18px; }
+
     .option-btn:hover { background: #f7f7f7; }
+
     .feedback { margin-top: 14px; padding: 14px 16px; border-radius: 12px; background: #f1f1f1; display: none; white-space: pre-line; line-height: 1.5; }
+
     .feedback.show { display: block; }
-    .debrief-list { line-height: 1.9; font-size: 18px; }
+
     .hint-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.38); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+
     .hint-overlay.show { display: flex; }
+
     .hint-box { background: #fff; border-radius: 16px; padding: 20px; max-width: 360px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,.2); text-align: center; }
+
     .hint-box img { width: 60px; height: 60px; object-fit: contain; display: block; margin: 0 auto 10px; }
+
+    .milestone-card { border: 1px solid rgba(178,34,34,0.18); background: linear-gradient(180deg, #fff 0%, #fffaf4 100%); }
+
+    .milestone-badge { width: 42px; height: 42px; border-radius: 999px; background: #b22222; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; margin-bottom: 14px; }
+
+    .milestone-subtitle { color: #666; font-size: 18px; margin-bottom: 24px; }
+
+    .achievement-list { display: grid; gap: 12px; max-width: 620px; margin-bottom: 22px; }
+
+    .achievement-list div { display: flex; justify-content: space-between; gap: 20px; padding: 14px 16px; border-radius: 12px; background: rgba(178,34,34,0.05); border: 1px solid rgba(178,34,34,0.12); }
+
+    .achievement-list span { color: #666; }
+
     @media (max-width: 900px) { .scene-layout { grid-template-columns: 1fr; } .options { margin-top: 0; } }
-    
-.milestone-card {
-  border: 1px solid rgba(178,34,34,0.18);
-  background: linear-gradient(180deg, #fff 0%, #fffaf4 100%);
-}
 
-.milestone-badge {
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
-  background: #b22222;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 14px;
-}
-
-.milestone-subtitle {
-  color: #666;
-  font-size: 18px;
-  margin-bottom: 24px;
-}
-
-.achievement-list {
-  display: grid;
-  gap: 12px;
-  max-width: 620px;
-  margin-bottom: 22px;
-}
-
-.achievement-list div {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 14px 16px;
-  border-radius: 12px;
-  background: rgba(178,34,34,0.05);
-  border: 1px solid rgba(178,34,34,0.12);
-}
-
-.achievement-list span {
-  color: #666;
-}
   </style>
+
 </head>
+
 <body>
+
   <div class="app">
+
     <div class="topbar"><div class="title">Arrivo a Venezia</div><div class="progress" id="progressText">Lezione 1</div></div>
 
-    <!-- INTRO: ikonok azonnal látszanak, nem csak kattintáskor -->
     <section class="screen active" id="introScreen">
+
       <div class="card intro">
+
         <h1>Arrivo a Venezia</h1>
+
         <div class="intro-steps">
+
           <span class="intro-step"><img src="icons/look.png" alt="">Guarda</span>
+
           <span class="intro-step"><img src="icons/listen.png" alt="">Ascolta</span>
+
           <span class="intro-step"><img src="icons/choose.png" alt="">Scegli</span>
+
         </div>
+
         <div id="hintOverlay" class="hint-overlay"><div id="hintBox" class="hint-box"><img id="hintImage" src="" alt=""><p id="hintText"></p><button type="button" onclick="closeHint()" class="btn light icon-btn"><img src="icons/close.png" alt="" class="btn-icon">Chiudi</button></div></div>
+
         <div class="btn-row" style="justify-content:center;"><button type="button" class="btn icon-btn" id="startBtn"><img src="icons/play.png" alt="" class="btn-icon">Inizia</button></div>
+
       </div>
+
     </section>
 
-    <!-- MAP -->
     <section class="screen" id="mapScreen"><div class="card"><h2>Mappa di Venezia</h2><p>Scegli il prossimo luogo.</p><div class="map-wrap" id="mapWrap"><img id="mapImage" src="img/map_venice.png" alt="Mappa di Venezia"></div></div></section>
 
-    <!-- TASK SCREEN: kép + rövid kérdés + válaszok -->
     <section class="screen" id="sceneScreen">
-      <div class="card">
-        <div class="scene-layout">
-          <div class="task-panel">
-            <div class="instruction-bar" id="instructionBar"></div>
-            <div class="image-wrap"><img id="sceneImage" class="scene-image" src="" alt=""><div id="targetHighlight" class="target-highlight" style="display:none;"></div></div>
-            <div class="audio-row"><button type="button" class="btn light icon-btn" id="playAudioBtn"><img src="icons/listen.png" alt="" class="btn-icon">Ascolta</button></div>
-            <div class="task-question" id="questionText"></div>
-          </div>
-          <div><div class="options" id="optionsWrap"></div><div class="feedback" id="feedbackBox"></div><div class="btn-row"><button type="button" class="btn secondary" id="backToMapBtn" style="display:none;">Torna alla mappa</button><button type="button" class="btn" id="nextBtn" style="display:none;">Continua</button></div></div>
-        </div>
-      </div>
+
+      <div class="card"><div class="scene-layout">
+
+        <div class="task-panel"><div class="instruction-bar" id="instructionBar"></div><div class="image-wrap"><img id="sceneImage" class="scene-image" src="" alt=""><div id="targetHighlight" class="target-highlight" style="display:none;"></div></div><div class="audio-row"><button type="button" class="btn light icon-btn" id="playAudioBtn"><img src="icons/listen.png" alt="" class="btn-icon">Ascolta</button></div><div class="task-question" id="questionText"></div></div>
+
+        <div><div class="options" id="optionsWrap"></div><div class="feedback" id="feedbackBox"></div><div class="btn-row"><button type="button" class="btn secondary" id="backToMapBtn" style="display:none;">Torna alla mappa</button><button type="button" class="btn" id="nextBtn" style="display:none;">Continua</button></div></div>
+
+      </div></div>
+
     </section>
 
-    <!-- DEBRIEF -->
-   <section class="screen" id="debriefScreen">
-  <div class="card milestone-card">
-    <div class="milestone-badge">✓</div>
-    <h2>Fine della lezione 1</h2>
-    <p class="milestone-subtitle">Hai completato il tuo primo percorso.</p>
+    <section class="screen" id="debriefScreen">
 
-    <div class="achievement-list">
-      <div><strong>chiedere una chiave</strong><span>ask for a key</span></div>
-      <div><strong>capire un numero</strong><span>understand a number</span></div>
-      <div><strong>riconoscere parole utili</strong><span>recognise useful words</span></div>
-      <div><strong>muoverti a Venezia</strong><span>find your way around Venice</span></div>
-    </div>
+      <div class="card milestone-card">
 
-    <div class="btn-row">
-      <button type="button" class="btn" id="restartBtn">Ricomincia</button>
-    </div>
+        <div class="milestone-badge">✓</div>
+
+        <h2>Fine della lezione 1</h2>
+
+        <p class="milestone-subtitle">Hai completato il tuo primo percorso.</p>
+
+        <div class="achievement-list">
+
+          <div><strong>chiedere una chiave</strong><span>ask for a key</span></div>
+
+          <div><strong>capire un numero</strong><span>understand a number</span></div>
+
+          <div><strong>riconoscere parole utili</strong><span>recognise useful words</span></div>
+
+          <div><strong>muoverti a Venezia</strong><span>find your way around Venice</span></div>
+
+        </div>
+
+        <div class="btn-row"><button type="button" class="btn" id="restartBtn">Ricomincia</button></div>
+
+      </div>
+
+    </section>
+
   </div>
-</section>
 
   <script>
+
     const ASSETS = { map: "img/map_venice.png", fallbackImage: "img/map_venice.png" };
+
     const hintData = {
+
       listen: { image: "icons/listen.png", text: "Ascolta = senti il suono" },
+
       look: { image: "icons/look.png", text: "Guarda = osserva l'immagine" },
+
       choose: { image: "icons/choose.png", text: "Scegli = fai una scelta" }
+
     };
 
-    // Feladatszabály: rövid kérdés maradhat; hosszú magyarázat nincs; célszó nem szerepel előre.
     const scenes = [
-      { id:"stazione", label:"Stazione Santa Lucia", x:8, y:55, unlocked:true, instructions:["look","listen","choose"], image:"img/inizio.png", audio:"audio/inizio.mp3", question:"Che parola senti?", options:[{text:"uscita",correct:false,feedback:"Non ancora."},{text:"inizio",correct:true,feedback:"Sì."},{text:"hotel",correct:false,feedback:"Non qui."}], next:"rialto" },
-      { id:"rialto", label:"Ponte di Rialto", x:38, y:52, unlocked:false, instructions:["look","listen","choose"], image:"img/rialto.png", audio:"audio/ponte.mp3", question:"Che parola senti?", options:[{text:"ponte",correct:true,feedback:"Sì."},{text:"piazza",correct:false,feedback:"No."},{text:"camera",correct:false,feedback:"No."}], next:"sanmarco" },
-      { id:"sanmarco", label:"Piazza San Marco", x:72, y:60, unlocked:false, instructions:["look","listen","choose"], image:"img/san_marco.png", audio:"audio/piazza.mp3", question:"Che parola senti?", options:[{text:"basilica",correct:false,feedback:"No."},{text:"campanile",correct:false,feedback:"No."},{text:"piazza",correct:true,feedback:"Sì."}], next:"hotel" },
-      { id:"hotel", label:"Albergo", x:66, y:48, unlocked:false, instructions:["look","listen","choose"], image:"img/ricezione.png", audio:"audio/chiave.mp3", question:"Cosa dici?", options:[{text:"La chiave, per favore.",correct:true,feedback:"Perfetto."},{text:"Il tavolo, per favore.",correct:false,feedback:"No."},{text:"La lampada, per favore.",correct:false,feedback:"No."}], next:"camera1" },
-      { id:"camera1", label:"Camera", x:58, y:40, unlocked:false, instructions:["look","choose"], image:"img/camera.png", audio:"", question:"Cos'è?", highlight:{left:8,top:52,width:10,height:18}, options:[{text:"il letto",correct:false,feedback:"No."},{text:"la lampada",correct:true,feedback:"Sì."},{text:"il tavolo",correct:false,feedback:"No."}], next:"camera2" },
-      { id:"camera2", label:"Lampada", x:60, y:42, unlocked:false, instructions:["look","choose"], image:"img/camera.png", audio:"", question:"Dov'è la lampada?", highlight:{left:8,top:52,width:10,height:18}, options:[{text:"a sinistra",correct:true,feedback:"Sì."},{text:"a destra",correct:false,feedback:"No."},{text:"vicino alla porta",correct:false,feedback:"No."}], next:"camera3" },
-      { id:"camera3", label:"Oggetti", x:62, y:44, unlocked:false, instructions:["look","choose"], image:"img/camera.png", audio:"", question:"Cosa vedi?", options:[{text:"il letto, la lampada e il tavolo",correct:true,feedback:"Sì."},{text:"il vaporetto, la piazza e il campanile",correct:false,feedback:"No."},{text:"la basilica, il ponte e l'albergo",correct:false,feedback:"No."}], next:"vaporetto" },
-      { id:"vaporetto", label:"San Zaccaria", x:78, y:54, unlocked:false, instructions:["look","listen","choose"], image:"img/fermata.png", audio:"audio/tre.mp3", question:"Che numero senti?", options:[{text:"tre",correct:true,feedback:"Sì."},{text:"dieci",correct:false,feedback:"No."},{text:"otto",correct:false,feedback:"No."}], next:"sospiri" },
-      { id:"sospiri", label:"Ponte dei Sospiri", x:75, y:64, unlocked:false, instructions:["look","choose"], image:"img/sospiri.png", audio:"", question:"Fine?", options:[{text:"Sì, continua",correct:true,feedback:"Benissimo."}], next:"debrief" }
+
+      { id:"stazione", label:"Stazione Santa Lucia", x:8, y:55, unlocked:true, instructions:["look","listen","choose"], image:"img/inizio.png", audio:"audio/inizio.mp3", question:"Che parola senti?", options:[{text:"uscita",correct:false,feedback:"No."},{text:"inizio",correct:true,feedback:"Sì."},{text:"hotel",correct:false,feedback:"No."}], next:"rialto" },
+
+      { id:"rialto", label:"Ponte di Rialto", x:43, y:37, unlocked:false, instructions:["look","listen","choose"], image:"img/rialto.png", audio:"audio/ponte.mp3", question:"Che parola senti?", options:[{text:"ponte",correct:true,feedback:"Sì."},{text:"piazza",correct:false,feedback:"No."},{text:"camera",correct:false,feedback:"No."}], next:"sanmarco" },
+
+      { id:"sanmarco", label:"Piazza San Marco", x:74, y:56, unlocked:false, instructions:["look","listen","choose"], image:"img/san_marco.png", audio:"audio/piazza.mp3", question:"Che parola senti?", options:[{text:"basilica",correct:false,feedback:"No."},{text:"campanile",correct:false,feedback:"No."},{text:"piazza",correct:true,feedback:"Sì."}], next:"hotel" },
+
+      { id:"hotel", label:"Albergo", x:29, y:68, unlocked:false, instructions:["look","listen","choose"], image:"img/ricezione.png", audio:"audio/chiave.mp3", question:"Cosa dici?", options:[{text:"La chiave, per favore.",correct:true,feedback:"Sì."},{text:"Il tavolo, per favore.",correct:false,feedback:"No."},{text:"La lampada, per favore.",correct:false,feedback:"No."}], next:"camera1" },
+
+      { id:"camera1", label:"Camera", x:29, y:68, unlocked:false, instructions:["look","choose"], image:"img/camera.png", audio:"", question:"Cos'è?", highlight:{left:22,top:56,width:42,height:24}, options:[{text:"il letto",correct:true,feedback:"Sì."},{text:"la lampada",correct:false,feedback:"No."},{text:"il tavolo",correct:false,feedback:"No."}], next:"camera2" },
+
+      { id:"camera2", label:"Lampada", x:29, y:68, unlocked:false, instructions:["look","choose"], image:"img/camera.png", audio:"", question:"Dov'è la lampada?", highlight:{left:6,top:48,width:10,height:18}, options:[{text:"a sinistra",correct:true,feedback:"Sì."},{text:"a destra",correct:false,feedback:"No."},{text:"vicino alla porta",correct:false,feedback:"No."}], next:"camera3" },
+
+      { id:"camera3", label:"Oggetti", x:29, y:68, unlocked:false, instructions:["look","choose"], image:"img/camera.png", audio:"", question:"Che cosa vedi?", options:[{text:"letto · lampada · tavolo",correct:true,feedback:"Sì."},{text:"vaporetto · piazza · campanile",correct:false,feedback:"No."},{text:"ponte · basilica · albergo",correct:false,feedback:"No."}], next:"vaporetto" },
+
+      { id:"vaporetto", label:"San Zaccaria", x:82, y:78, unlocked:false, instructions:["look","listen","choose"], image:"img/fermata.png", audio:"audio/tre.mp3", question:"Che numero senti?", options:[{text:"tre",correct:true,feedback:"Sì."},{text:"dieci",correct:false,feedback:"No."},{text:"otto",correct:false,feedback:"No."}], next:"sospiri" },
+
+      { id:"sospiri", label:"Ponte dei Sospiri", x:88, y:31, unlocked:false, instructions:["look","choose"], image:"img/sospiri.png", audio:"", question:"Fine?", options:[{text:"Sì, continua",correct:true,feedback:"Sì."}], next:"debrief" }
+
     ];
 
     const screens = { intro:document.getElementById("introScreen"), map:document.getElementById("mapScreen"), scene:document.getElementById("sceneScreen"), debrief:document.getElementById("debriefScreen") };
+
     const mapWrap=document.getElementById("mapWrap"), mapImage=document.getElementById("mapImage"), progressText=document.getElementById("progressText"), sceneImage=document.getElementById("sceneImage"), questionText=document.getElementById("questionText"), optionsWrap=document.getElementById("optionsWrap"), feedbackBox=document.getElementById("feedbackBox"), playAudioBtn=document.getElementById("playAudioBtn"), nextBtn=document.getElementById("nextBtn"), backToMapBtn=document.getElementById("backToMapBtn"), startBtn=document.getElementById("startBtn"), restartBtn=document.getElementById("restartBtn"), hintOverlay=document.getElementById("hintOverlay"), hintImage=document.getElementById("hintImage"), hintText=document.getElementById("hintText"), targetHighlight=document.getElementById("targetHighlight");
+
     let currentAudio=null, completedCount=0;
+
     function closeHint(){ hintOverlay.classList.remove("show"); }
-    function showHint(key){ if(!hintData[key])return; hintImage.src=hintData[key].image; hintText.textContent=hintData[key].text; hintOverlay.classList.add("show"); }
-    function showScreen(name){ Object.values(screens).forEach(s=>s.classList.remove("active")); screens[name].classList.add("active"); }
+
+    function showHint(k){ if(!hintData[k])return; hintImage.src=hintData[k].image; hintText.textContent=hintData[k].text; hintOverlay.classList.add("show"); }
+
+    function showScreen(n){ Object.values(screens).forEach(s=>s.classList.remove("active")); screens[n].classList.add("active"); }
+
     function updateProgress(){ progressText.textContent=`Lezione 1 · completati: ${completedCount}/${scenes.length-1}`; }
-    function renderInstructionBar(instructions){ const bar=document.getElementById("instructionBar"); bar.innerHTML=""; instructions.forEach(key=>{ const b=document.createElement("button"); b.type="button"; b.className="inst"; b.innerHTML=`<img src="${hintData[key].image}" class="icon" alt=""> ${key==="look"?"Guarda":key==="listen"?"Ascolta":"Scegli"}`; b.addEventListener("click",()=>showHint(key)); bar.appendChild(b); }); }
-    function renderMap(){ mapImage.src=ASSETS.map; mapWrap.querySelectorAll(".hotspot,.arrow").forEach(el=>el.remove()); const mapScenes=scenes.filter(s=>!s.id.startsWith("camera")); const active=mapScenes.find(s=>s.unlocked&&!s.completedOnce); mapScenes.forEach(scene=>{ const btn=document.createElement("button"); btn.type="button"; btn.style.left=`${scene.x}%`; btn.style.top=`${scene.y}%`; btn.className=(active&&scene.id===active.id)?"hotspot active":scene.unlocked?"hotspot":"hotspot locked inactive"; btn.addEventListener("click",()=>scene.unlocked?openScene(scene.id):alert("Questo luogo è ancora bloccato.")); if(active&&scene.id===active.id){ const a=document.createElement("div"); a.className="arrow"; a.style.left=`${scene.x}%`; a.style.top=`${scene.y}%`; a.innerHTML="▼"; mapWrap.appendChild(a); } mapWrap.appendChild(btn); }); updateProgress(); }
-    function openScene(id){ const scene=scenes.find(s=>s.id===id); if(!scene)return; renderInstructionBar(scene.instructions||[]); sceneImage.src=scene.image||ASSETS.fallbackImage; questionText.textContent=scene.question||""; feedbackBox.classList.remove("show"); feedbackBox.textContent=""; nextBtn.style.display="none"; backToMapBtn.style.display="none"; if(scene.highlight){ targetHighlight.style.display="block"; Object.assign(targetHighlight.style,{left:scene.highlight.left+"%",top:scene.highlight.top+"%",width:scene.highlight.width+"%",height:scene.highlight.height+"%"}); } else targetHighlight.style.display="none"; optionsWrap.innerHTML=""; scene.options.forEach(option=>{ const b=document.createElement("button"); b.className="option-btn"; b.type="button"; b.textContent=option.text; b.addEventListener("click",()=>handleAnswer(scene,option)); optionsWrap.appendChild(b); }); setupAudio(scene.audio); showScreen("scene"); }
-    function setupAudio(url){ if(currentAudio){currentAudio.pause(); currentAudio=null;} if(url){ currentAudio=new Audio(url); playAudioBtn.style.display="inline-flex"; } else playAudioBtn.style.display="none"; }
-    function handleAnswer(scene,option){ feedbackBox.textContent=option.feedback; feedbackBox.classList.add("show"); if(!option.correct){ nextBtn.style.display="none"; backToMapBtn.style.display="inline-block"; backToMapBtn.onclick=()=>{renderMap();showScreen("map")}; return; } const nextScene=scenes.find(s=>s.id===scene.next); if(nextScene)nextScene.unlocked=true; if(!scene.completedOnce){ scene.completedOnce=true; if(scene.id!=="sospiri")completedCount++; } nextBtn.style.display="inline-block"; backToMapBtn.style.display=scene.next==="debrief"?"none":"inline-block"; nextBtn.onclick=()=> scene.next==="debrief"?showScreen("debrief"):(nextScene&&nextScene.id.startsWith("camera")?openScene(nextScene.id):(renderMap(),showScreen("map"))); backToMapBtn.onclick=()=>{renderMap();showScreen("map")}; updateProgress(); }
+
+    function renderInstructionBar(items){
+
+      const bar=document.getElementById("instructionBar");
+
+      bar.innerHTML="";
+
+      items.forEach(k=>{
+
+        const b=document.createElement("button");
+
+        b.type="button";
+
+        b.className="inst";
+
+        b.innerHTML=`<img src="${hintData[k].image}" class="icon" alt=""> ${k==="look"?"Guarda":k==="listen"?"Ascolta":"Scegli"}`;
+
+        b.addEventListener("click",()=>showHint(k));
+
+        bar.appendChild(b);
+
+      });
+
+    }
+
+    function renderMap(){
+
+      mapImage.src=ASSETS.map;
+
+      mapWrap.querySelectorAll(".hotspot,.arrow").forEach(e=>e.remove());
+
+      const mapScenes=scenes.filter(s=>!s.id.startsWith("camera"));
+
+      const active=mapScenes.find(s=>s.unlocked&&!s.completedOnce);
+
+      mapScenes.forEach(s=>{
+
+        const b=document.createElement("button");
+
+        b.type="button";
+
+        b.style.left=`${s.x}%`;
+
+        b.style.top=`${s.y}%`;
+
+        b.className=(active&&s.id===active.id)?"hotspot active":s.unlocked?"hotspot":"hotspot locked";
+
+        b.addEventListener("click",()=>s.unlocked?openScene(s.id):alert("Questo luogo è ancora bloccato."));
+
+        if(active&&s.id===active.id){
+
+          const a=document.createElement("div");
+
+          a.className="arrow";
+
+          a.style.left=`${s.x}%`;
+
+          a.style.top=`${s.y}%`;
+
+          a.innerHTML="▼";
+
+          mapWrap.appendChild(a);
+
+        }
+
+        mapWrap.appendChild(b);
+
+      });
+
+      updateProgress();
+
+    }
+
+    function openScene(id){
+
+      const s=scenes.find(x=>x.id===id);
+
+      if(!s)return;
+
+      renderInstructionBar(s.instructions||[]);
+
+      sceneImage.src=s.image||ASSETS.fallbackImage;
+
+      questionText.textContent=s.question||"";
+
+      feedbackBox.classList.remove("show");
+
+      feedbackBox.textContent="";
+
+      nextBtn.style.display="none";
+
+      backToMapBtn.style.display="none";
+
+      if(s.highlight){
+
+        targetHighlight.style.display="block";
+
+        Object.assign(targetHighlight.style,{left:s.highlight.left+"%",top:s.highlight.top+"%",width:s.highlight.width+"%",height:s.highlight.height+"%"});
+
+      } else {
+
+        targetHighlight.style.display="none";
+
+      }
+
+      optionsWrap.innerHTML="";
+
+      s.options.forEach(o=>{
+
+        const b=document.createElement("button");
+
+        b.className="option-btn";
+
+        b.type="button";
+
+        b.textContent=o.text;
+
+        b.addEventListener("click",()=>handleAnswer(s,o));
+
+        optionsWrap.appendChild(b);
+
+      });
+
+      setupAudio(s.audio);
+
+      showScreen("scene");
+
+    }
+
+    function setupAudio(url){
+
+      if(currentAudio){ currentAudio.pause(); currentAudio=null; }
+
+      if(url){ currentAudio=new Audio(url); playAudioBtn.style.display="inline-flex"; }
+
+      else { playAudioBtn.style.display="none"; }
+
+    }
+
+    function handleAnswer(s,o){
+
+      feedbackBox.textContent=o.feedback;
+
+      feedbackBox.classList.add("show");
+
+      if(!o.correct){
+
+        nextBtn.style.display="none";
+
+        backToMapBtn.style.display="inline-block";
+
+        backToMapBtn.onclick=()=>{ renderMap(); showScreen("map"); };
+
+        return;
+
+      }
+
+      const n=scenes.find(x=>x.id===s.next);
+
+      if(n)n.unlocked=true;
+
+      if(!s.completedOnce){
+
+        s.completedOnce=true;
+
+        if(s.id!=="sospiri")completedCount++;
+
+      }
+
+      nextBtn.style.display="inline-block";
+
+      backToMapBtn.style.display=s.next==="debrief"?"none":"inline-block";
+
+      nextBtn.onclick=()=>s.next==="debrief"?showScreen("debrief"):(n&&n.id.startsWith("camera")?openScene(n.id):(renderMap(),showScreen("map")));
+
+      backToMapBtn.onclick=()=>{ renderMap(); showScreen("map"); };
+
+      updateProgress();
+
+    }
+
     playAudioBtn.addEventListener("click",()=>{ if(currentAudio){ currentAudio.currentTime=0; currentAudio.play(); }});
+
     startBtn.addEventListener("click",()=>{ renderMap(); showScreen("map"); });
+
     restartBtn.addEventListener("click",()=>{ scenes.forEach((s,i)=>{s.unlocked=i===0;s.completedOnce=false;}); completedCount=0; renderMap(); showScreen("intro"); closeHint(); updateProgress(); });
-    renderMap(); updateProgress();
+
+    renderMap();
+
+    updateProgress();
+
   </script>
+
 </body>
+
 </html>
