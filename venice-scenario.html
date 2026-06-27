@@ -53,6 +53,52 @@
     .hint-box { background: #fff; border-radius: 16px; padding: 20px; max-width: 360px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,.2); text-align: center; }
     .hint-box img { width: 60px; height: 60px; object-fit: contain; display: block; margin: 0 auto 10px; }
     @media (max-width: 900px) { .scene-layout { grid-template-columns: 1fr; } .options { margin-top: 0; } }
+    
+.milestone-card {
+  border: 1px solid rgba(178,34,34,0.18);
+  background: linear-gradient(180deg, #fff 0%, #fffaf4 100%);
+}
+
+.milestone-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: #b22222;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 14px;
+}
+
+.milestone-subtitle {
+  color: #666;
+  font-size: 18px;
+  margin-bottom: 24px;
+}
+
+.achievement-list {
+  display: grid;
+  gap: 12px;
+  max-width: 620px;
+  margin-bottom: 22px;
+}
+
+.achievement-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(178,34,34,0.05);
+  border: 1px solid rgba(178,34,34,0.12);
+}
+
+.achievement-list span {
+  color: #666;
+}
   </style>
 </head>
 <body>
@@ -92,8 +138,24 @@
     </section>
 
     <!-- DEBRIEF -->
-    <section class="screen" id="debriefScreen"><div class="card"><h2>Fine della lezione 1</h2><p>Ora puoi:</p><div class="debrief-list">chiedere una chiave<br>capire un numero<br>riconoscere alcune parole utili<br>muoverti a Venezia in situazioni semplici</div><div class="btn-row"><button type="button" class="btn" id="restartBtn">Ricomincia</button></div></div></section>
+   <section class="screen" id="debriefScreen">
+  <div class="card milestone-card">
+    <div class="milestone-badge">✓</div>
+    <h2>Fine della lezione 1</h2>
+    <p class="milestone-subtitle">Hai completato il tuo primo percorso.</p>
+
+    <div class="achievement-list">
+      <div><strong>chiedere una chiave</strong><span>ask for a key</span></div>
+      <div><strong>capire un numero</strong><span>understand a number</span></div>
+      <div><strong>riconoscere parole utili</strong><span>recognise useful words</span></div>
+      <div><strong>muoverti a Venezia</strong><span>find your way around Venice</span></div>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" class="btn" id="restartBtn">Ricomincia</button>
+    </div>
   </div>
+</section>
 
   <script>
     const ASSETS = { map: "img/map_venice.png", fallbackImage: "img/map_venice.png" };
