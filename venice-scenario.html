@@ -462,16 +462,26 @@
       }
     };
 
+    // =========================================================
+    // SCENE DATA
+    // Pedagogical rule:
+    // 1. Do NOT reveal the target word in the scene title.
+    // 2. First: visual context.
+    // 3. Then: optional audio input.
+    // 4. Then: learner decision.
+    // =========================================================
     const scenes = [
       {
+        // SCREEN 1: visual orientation / "inizio"
+        // Target: infer the meaning of "inizio" from the red arrow and context.
         id: "stazione",
         label: "Stazione Santa Lucia",
         x: 8,
         y: 55,
         unlocked: true,
         instructions: ["look", "choose"],
-        title: "Stazione Santa Lucia",
-        text: "Arrivi a Venezia.\nVedi una freccia rossa con la parola: inizio.",
+        title: "Guarda l'immagine",
+        text: "Arrivi a Venezia.\nVedi una freccia rossa con una parola.",
         image: "img/stazione.png",
         audio: "",
         question: "Cosa significa “inizio”?",
@@ -483,70 +493,78 @@
         next: "rialto"
       },
       {
+        // SCREEN 2: audio discrimination
+        // Target: recognize "ponte" from audio, not from the title.
         id: "rialto",
         label: "Ponte di Rialto",
         x: 38,
         y: 52,
         unlocked: false,
-        instructions: ["listen", "choose"],
-        title: "Ponte di Rialto",
-        text: "Sei vicino al Ponte di Rialto.\nAscolta e scegli la parola giusta.",
+        instructions: ["look", "listen", "choose"],
+        title: "Guarda e ascolta",
+        text: "Sei vicino a un luogo famoso.\nGuarda l'immagine.\nAscolta.",
         image: "img/rialto.png",
-        audio: "",
+        audio: "audio/rialto_ponte.mp3",
         question: "Quale parola senti?",
         options: [
-          { text: "ponte", correct: true, feedback: "Esatto.\nPonte = bridge." },
-          { text: "piazza", correct: false, feedback: "No.\nQui sei su un ponte." },
-          { text: "camera", correct: false, feedback: "No.\nNon sei ancora in hotel." }
+          { text: "ponte", correct: true, feedback: "Esatto.\nHai sentito: ponte." },
+          { text: "piazza", correct: false, feedback: "No.\nAscolta ancora: ponte." },
+          { text: "camera", correct: false, feedback: "No.\nCamera è in albergo." }
         ],
         next: "sanmarco"
       },
       {
+        // SCREEN 3: visual category recognition
+        // Target: identify "piazza" from image/context without giving it away in title.
         id: "sanmarco",
         label: "Piazza San Marco",
         x: 72,
         y: 60,
         unlocked: false,
         instructions: ["look", "choose"],
-        title: "Piazza San Marco",
-        text: "Ora sei in Piazza San Marco.\nGuardi i monumenti principali.",
+        title: "Guarda l'immagine",
+        text: "Sei in un grande spazio aperto.\nCi sono monumenti e molte persone.",
         image: "img/san_marco.png",
         audio: "",
-        question: "Quale parola indica la piazza?",
+        question: "Quale parola indica questo luogo?",
         options: [
-          { text: "basilica", correct: false, feedback: "No.\nLa basilica è l'edificio religioso." },
-          { text: "campanile", correct: false, feedback: "No.\nIl campanile è la torre." },
-          { text: "piazza", correct: true, feedback: "Sì.\nPiazza San Marco." }
+          { text: "basilica", correct: false, feedback: "No.\nLa basilica è un edificio." },
+          { text: "campanile", correct: false, feedback: "No.\nIl campanile è una torre." },
+          { text: "piazza", correct: true, feedback: "Sì.\nQuesto luogo è una piazza." }
         ],
         next: "hotel"
       },
       {
+        // SCREEN 4: functional communication chunk
+        // Target: choose the useful phrase at reception.
         id: "hotel",
         label: "Albergo",
         x: 66,
         y: 48,
         unlocked: false,
-        instructions: ["listen", "choose"],
-        title: "Alla ricezione",
-        text: "Sei in albergo.\nLa receptionist ti guarda e aspetta.",
+        instructions: ["look", "listen", "choose"],
+        title: "In albergo",
+        text: "Sei in albergo.\nUna persona ti guarda e aspetta.\nHai bisogno della tua camera.",
         image: "img/ricezione.png",
-        audio: "",
+        audio: "audio/hotel_dialogo.mp3",
         question: "Cosa dici?",
         options: [
           { text: "La chiave, per favore.", correct: true, feedback: "Perfetto.\n- Quale camera?\n- La camera 451.\n- Ecco.\n- Grazie.\n- Prego." },
-          { text: "Il tavolo, per favore.", correct: false, feedback: "No.\nAlla ricezione chiedi la chiave." },
-          { text: "La lampada, per favore.", correct: false, feedback: "No.\nLa lampada è nella camera, non alla ricezione." }
+          { text: "Il tavolo, per favore.", correct: false, feedback: "No.\nIl tavolo non è quello che chiedi qui." },
+          { text: "La lampada, per favore.", correct: false, feedback: "No.\nLa lampada è nella camera." }
         ],
         next: "camera1"
       },
       {
+        // SCREEN 5A: image-based object recognition
+        // Target: identify "il letto" from the room image.
         id: "camera1",
         label: "Camera",
         x: 58,
         y: 40,
         unlocked: false,
         instructions: ["look", "choose"],
-        title: "La camera 451",
+        title: "Nella camera",
         text: "Entri nella camera.\nGuarda.",
         image: "img/camera.png",
         audio: "",
@@ -559,6 +577,8 @@
         next: "camera2"
       },
       {
+        // SCREEN 5B: spatial language
+        // Target: understand "a destra" from the visual layout.
         id: "camera2",
         label: "Lampada",
         x: 60,
@@ -578,6 +598,8 @@
         next: "camera3"
       },
       {
+        // SCREEN 5C: visual summary
+        // Target: consolidate room vocabulary through image-based choice.
         id: "camera3",
         label: "Oggetti",
         x: 62,
@@ -585,7 +607,7 @@
         unlocked: false,
         instructions: ["look", "choose"],
         title: "Nella camera",
-        text: "Ora scegli la risposta corretta.",
+        text: "Guarda l'immagine.\nScegli la risposta corretta.",
         image: "img/camera.png",
         audio: "",
         question: "Cosa vedi nella camera?",
@@ -597,16 +619,18 @@
         next: "vaporetto"
       },
       {
+        // SCREEN 6: number recognition from audio
+        // Target: recognize the number "tre" from audio.
         id: "vaporetto",
         label: "San Zaccaria",
         x: 78,
         y: 54,
         unlocked: false,
-        instructions: ["listen", "choose"],
-        title: "Fermata del vaporetto",
-        text: "Vai alla fermata del vaporetto.\nDevi capire un numero semplice.",
+        instructions: ["look", "listen", "choose"],
+        title: "Alla fermata",
+        text: "Sei vicino all'acqua.\nDevi capire un numero.\nAscolta.",
         image: "img/fermata.png",
-        audio: "",
+        audio: "audio/vaporetto_tre.mp3",
         question: "Quale numero senti?",
         options: [
           { text: "tre", correct: true, feedback: "Giusto.\nHai capito il numero." },
@@ -616,13 +640,15 @@
         next: "sospiri"
       },
       {
+        // SCREEN 7: closing screen
+        // Target: finish the route and move to debrief.
         id: "sospiri",
         label: "Ponte dei Sospiri",
         x: 75,
         y: 64,
         unlocked: false,
         instructions: ["look", "choose"],
-        title: "Ponte dei Sospiri",
+        title: "Fine del percorso",
         text: "Hai finito il percorso.\nOra sai usare alcune parole utili a Venezia.",
         image: "img/sospiri.png",
         audio: "",
