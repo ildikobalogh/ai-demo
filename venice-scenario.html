@@ -68,6 +68,35 @@
       color: #555;
     }
 
+    .intro-instructions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin: 22px 0 28px;
+      flex-wrap: wrap;
+    }
+
+    .intro-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: #fff3cd;
+      color: #8a1c1c;
+      border: 2px solid #b22222;
+      font-size: 22px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .intro-hint img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
     .btn {
       border: none;
       background: #b22222;
@@ -294,27 +323,30 @@
 
     .instruction-bar {
       display: flex;
-      gap: 16px;
-      margin-bottom: 16px;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      margin: 0 0 14px;
       flex-wrap: wrap;
     }
 
     .inst {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 15px;
-      color: #333;
-      background: #f6f6f6;
-      padding: 8px 10px;
+      gap: 9px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #8a1c1c;
+      background: #fff3cd;
+      padding: 10px 14px;
       border-radius: 999px;
-      border: none;
+      border: 2px solid #b22222;
       cursor: pointer;
     }
 
     .icon {
-      width: 18px;
-      height: 18px;
+      width: 26px;
+      height: 26px;
       object-fit: contain;
     }
 
@@ -354,13 +386,12 @@
       <div class="card intro">
         <h1>Arrivo a Venezia</h1>
 
-        <p>
-          Sei a Venezia.
-          <span class="hint-word" data-help="listen">Ascolta</span>,
-          <span class="hint-word" data-help="look">guarda</span>
-          e
-          <span class="hint-word" data-help="choose">scegli</span>.
-        </p>
+        <!-- START SCREEN: visible help icons from the beginning -->
+        <div class="intro-instructions">
+          <button type="button" class="intro-hint hint-word" data-help="look"><img src="icons/look.png" alt="">Guarda</button>
+          <button type="button" class="intro-hint hint-word" data-help="listen"><img src="icons/listen.png" alt="">Ascolta</button>
+          <button type="button" class="intro-hint hint-word" data-help="choose"><img src="icons/choose.png" alt="">Scegli</button>
+        </div>
 
         <div id="hintOverlay" class="hint-overlay">
           <div id="hintBox" class="hint-box">
@@ -394,10 +425,10 @@
 
     <section class="screen" id="sceneScreen">
       <div class="card">
-        <div class="instruction-bar" id="instructionBar"></div>
-
         <div class="scene-layout">
           <div class="scene-image">
+            <!-- TASK HELP: close to the image, always visible -->
+            <div class="instruction-bar" id="instructionBar"></div>
             <img id="sceneImage" src="" alt="" />
           </div>
 
@@ -406,8 +437,7 @@
             <div class="scene-text" id="sceneText"></div>
 
             <div class="audio-row">
-              <button type="button" class="btn light" id="playAudioBtn">Ascolta</button>
-              <button type="button" class="btn light" id="replayAudioBtn">Riascolta</button>
+              <button type="button" class="btn light icon-btn" id="playAudioBtn"><img src="icons/listen.png" alt="" class="btn-icon">Ascolta</button>
             </div>
 
             <div class="question" id="questionText"></div>
@@ -463,198 +493,186 @@
     };
 
     // =========================================================
-    // SCENE DATA
-    // Pedagogical rule:
-    // 1. Do NOT reveal the target word in the scene title.
-    // 2. First: visual context.
-    // 3. Then: optional audio input.
-    // 4. Then: learner decision.
+    // SCENE DATA - MEANING-FIRST TASKS
+    // Rule: image/symbol first -> audio -> written choice.
+    // No target word in title/text before the answer options.
     // =========================================================
     const scenes = [
       {
-        // SCREEN 1: visual orientation / "inizio"
-        // Target: infer the meaning of "inizio" from the red arrow and context.
+        // START SYMBOL TASK: audio-to-written-form match for "inizio".
         id: "stazione",
         label: "Stazione Santa Lucia",
         x: 8,
         y: 55,
         unlocked: true,
-        instructions: ["look", "choose"],
-        title: "Guarda l'immagine",
-        text: "Arrivi a Venezia.\nVedi una freccia rossa con una parola.",
-        image: "img/stazione.png",
-        audio: "",
-        question: "Cosa significa “inizio”?",
+        instructions: ["look", "listen", "choose"],
+        title: "",
+        text: "",
+        image: "img/inizio.png",
+        audio: "audio/inizio.mp3",
+        question: "",
         options: [
-          { text: "uscita", correct: false, feedback: "Non ancora.\nQui il viaggio comincia." },
-          { text: "inizio", correct: true, feedback: "Sì.\nQui inizia il percorso." },
-          { text: "hotel", correct: false, feedback: "Non qui.\nPrima devi cominciare il percorso." }
+          { text: "uscita", correct: false, feedback: "No." },
+          { text: "inizio", correct: true, feedback: "Sì." },
+          { text: "albergo", correct: false, feedback: "No." }
         ],
         next: "rialto"
       },
       {
-        // SCREEN 2: audio discrimination
-        // Target: recognize "ponte" from audio, not from the title.
+        // AUDIO DISCRIMINATION: recognize "ponte" from audio.
         id: "rialto",
         label: "Ponte di Rialto",
         x: 38,
         y: 52,
         unlocked: false,
         instructions: ["look", "listen", "choose"],
-        title: "Guarda e ascolta",
-        text: "Sei vicino a un luogo famoso.\nGuarda l'immagine.\nAscolta.",
+        title: "",
+        text: "",
         image: "img/rialto.png",
-        audio: "audio/rialto_ponte.mp3",
-        question: "Quale parola senti?",
+        audio: "audio/ponte.mp3",
+        question: "",
         options: [
-          { text: "ponte", correct: true, feedback: "Esatto.\nHai sentito: ponte." },
-          { text: "piazza", correct: false, feedback: "No.\nAscolta ancora: ponte." },
-          { text: "camera", correct: false, feedback: "No.\nCamera è in albergo." }
+          { text: "ponte", correct: true, feedback: "Sì." },
+          { text: "piazza", correct: false, feedback: "No." },
+          { text: "camera", correct: false, feedback: "No." }
         ],
         next: "sanmarco"
       },
       {
-        // SCREEN 3: visual category recognition
-        // Target: identify "piazza" from image/context without giving it away in title.
+        // AUDIO + IMAGE: recognize "piazza".
         id: "sanmarco",
         label: "Piazza San Marco",
         x: 72,
         y: 60,
         unlocked: false,
-        instructions: ["look", "choose"],
-        title: "Guarda l'immagine",
-        text: "Sei in un grande spazio aperto.\nCi sono monumenti e molte persone.",
+        instructions: ["look", "listen", "choose"],
+        title: "",
+        text: "",
         image: "img/san_marco.png",
-        audio: "",
-        question: "Quale parola indica questo luogo?",
+        audio: "audio/piazza.mp3",
+        question: "",
         options: [
-          { text: "basilica", correct: false, feedback: "No.\nLa basilica è un edificio." },
-          { text: "campanile", correct: false, feedback: "No.\nIl campanile è una torre." },
-          { text: "piazza", correct: true, feedback: "Sì.\nQuesto luogo è una piazza." }
+          { text: "basilica", correct: false, feedback: "No." },
+          { text: "campanile", correct: false, feedback: "No." },
+          { text: "piazza", correct: true, feedback: "Sì." }
         ],
         next: "hotel"
       },
       {
-        // SCREEN 4: functional communication chunk
-        // Target: choose the useful phrase at reception.
+        // FUNCTIONAL CHUNK: choose the useful phrase at reception.
         id: "hotel",
         label: "Albergo",
         x: 66,
         y: 48,
         unlocked: false,
         instructions: ["look", "listen", "choose"],
-        title: "In albergo",
-        text: "Sei in albergo.\nUna persona ti guarda e aspetta.\nHai bisogno della tua camera.",
+        title: "",
+        text: "",
         image: "img/ricezione.png",
-        audio: "audio/hotel_dialogo.mp3",
-        question: "Cosa dici?",
+        audio: "audio/chiave_per_favore.mp3",
+        question: "",
         options: [
-          { text: "La chiave, per favore.", correct: true, feedback: "Perfetto.\n- Quale camera?\n- La camera 451.\n- Ecco.\n- Grazie.\n- Prego." },
-          { text: "Il tavolo, per favore.", correct: false, feedback: "No.\nIl tavolo non è quello che chiedi qui." },
-          { text: "La lampada, per favore.", correct: false, feedback: "No.\nLa lampada è nella camera." }
+          { text: "La chiave, per favore.", correct: true, feedback: "Sì." },
+          { text: "Il tavolo, per favore.", correct: false, feedback: "No." },
+          { text: "La lampada, per favore.", correct: false, feedback: "No." }
         ],
         next: "camera1"
       },
       {
-        // SCREEN 5A: image-based object recognition
-        // Target: identify "il letto" from the room image.
+        // ROOM OBJECT: audio-to-written-form match for "il letto".
         id: "camera1",
         label: "Camera",
         x: 58,
         y: 40,
         unlocked: false,
-        instructions: ["look", "choose"],
-        title: "Nella camera",
-        text: "Entri nella camera.\nGuarda.",
+        instructions: ["look", "listen", "choose"],
+        title: "",
+        text: "",
         image: "img/camera.png",
-        audio: "",
-        question: "Cos'è?",
+        audio: "audio/letto.mp3",
+        question: "",
         options: [
-          { text: "il letto", correct: true, feedback: "Sì.\nÈ il letto." },
-          { text: "la lampada", correct: false, feedback: "No.\nNon è la lampada." },
-          { text: "il tavolo", correct: false, feedback: "No.\nNon è il tavolo." }
+          { text: "il letto", correct: true, feedback: "Sì." },
+          { text: "la lampada", correct: false, feedback: "No." },
+          { text: "il tavolo", correct: false, feedback: "No." }
         ],
         next: "camera2"
       },
       {
-        // SCREEN 5B: spatial language
-        // Target: understand "a destra" from the visual layout.
+        // SPATIAL LANGUAGE: choose "a destra" from the visual layout.
         id: "camera2",
         label: "Lampada",
         x: 60,
         y: 42,
         unlocked: false,
         instructions: ["look", "choose"],
-        title: "Nella camera",
-        text: "Guarda ancora l'immagine.",
+        title: "",
+        text: "",
         image: "img/camera.png",
         audio: "",
-        question: "Dov'è la lampada?",
+        question: "",
         options: [
-          { text: "a sinistra", correct: false, feedback: "No.\nNon è a sinistra." },
-          { text: "a destra", correct: true, feedback: "Sì.\nLa lampada è a destra." },
-          { text: "vicino alla porta", correct: false, feedback: "No.\nNon è vicino alla porta." }
+          { text: "a sinistra", correct: false, feedback: "No." },
+          { text: "a destra", correct: true, feedback: "Sì." },
+          { text: "vicino alla porta", correct: false, feedback: "No." }
         ],
         next: "camera3"
       },
       {
-        // SCREEN 5C: visual summary
-        // Target: consolidate room vocabulary through image-based choice.
+        // VISUAL SUMMARY: consolidate room vocabulary.
         id: "camera3",
         label: "Oggetti",
         x: 62,
         y: 44,
         unlocked: false,
         instructions: ["look", "choose"],
-        title: "Nella camera",
-        text: "Guarda l'immagine.\nScegli la risposta corretta.",
+        title: "",
+        text: "",
         image: "img/camera.png",
         audio: "",
-        question: "Cosa vedi nella camera?",
+        question: "",
         options: [
-          { text: "il letto, la lampada e il tavolo", correct: true, feedback: "Benissimo.\nVedi il letto, la lampada e il tavolo." },
-          { text: "il vaporetto, la piazza e il campanile", correct: false, feedback: "No.\nQuesti non sono nella camera." },
-          { text: "la basilica, il ponte e l'albergo", correct: false, feedback: "No.\nQuesti luoghi non sono nella camera." }
+          { text: "il letto, la lampada e il tavolo", correct: true, feedback: "Sì." },
+          { text: "il vaporetto, la piazza e il campanile", correct: false, feedback: "No." },
+          { text: "la basilica, il ponte e l'albergo", correct: false, feedback: "No." }
         ],
         next: "vaporetto"
       },
       {
-        // SCREEN 6: number recognition from audio
-        // Target: recognize the number "tre" from audio.
+        // NUMBER RECOGNITION: audio-to-written-form match for "tre".
         id: "vaporetto",
         label: "San Zaccaria",
         x: 78,
         y: 54,
         unlocked: false,
         instructions: ["look", "listen", "choose"],
-        title: "Alla fermata",
-        text: "Sei vicino all'acqua.\nDevi capire un numero.\nAscolta.",
+        title: "",
+        text: "",
         image: "img/fermata.png",
-        audio: "audio/vaporetto_tre.mp3",
-        question: "Quale numero senti?",
+        audio: "audio/tre.mp3",
+        question: "",
         options: [
-          { text: "tre", correct: true, feedback: "Giusto.\nHai capito il numero." },
-          { text: "dieci", correct: false, feedback: "Non esatto.\nRiascolta, se vuoi." },
-          { text: "otto", correct: false, feedback: "Non esatto.\nRiascolta, se vuoi." }
+          { text: "tre", correct: true, feedback: "Sì." },
+          { text: "dieci", correct: false, feedback: "No." },
+          { text: "otto", correct: false, feedback: "No." }
         ],
         next: "sospiri"
       },
       {
-        // SCREEN 7: closing screen
-        // Target: finish the route and move to debrief.
+        // CLOSING SCREEN.
         id: "sospiri",
         label: "Ponte dei Sospiri",
         x: 75,
         y: 64,
         unlocked: false,
         instructions: ["look", "choose"],
-        title: "Fine del percorso",
-        text: "Hai finito il percorso.\nOra sai usare alcune parole utili a Venezia.",
+        title: "",
+        text: "",
         image: "img/sospiri.png",
         audio: "",
-        question: "Vuoi finire la lezione?",
+        question: "",
         options: [
-          { text: "Sì, continua", correct: true, feedback: "Benissimo.\nPassi al riepilogo finale." }
+          { text: "Sì, continua", correct: true, feedback: "Sì." }
         ],
         next: "debrief"
       }
@@ -679,7 +697,6 @@
     const feedbackBox = document.getElementById("feedbackBox");
 
     const playAudioBtn = document.getElementById("playAudioBtn");
-    const replayAudioBtn = document.getElementById("replayAudioBtn");
     const nextBtn = document.getElementById("nextBtn");
     const backToMapBtn = document.getElementById("backToMapBtn");
 
@@ -789,9 +806,12 @@
       renderInstructionBar(scene.instructions || []);
 
       sceneTitle.textContent = scene.title;
+      sceneTitle.style.display = scene.title ? "block" : "none";
       sceneText.textContent = scene.text;
+      sceneText.style.display = scene.text ? "block" : "none";
       sceneImage.src = scene.image || ASSETS.fallbackImage;
       questionText.textContent = scene.question;
+      questionText.style.display = scene.question ? "block" : "none";
       feedbackBox.classList.remove("show");
       feedbackBox.textContent = "";
       nextBtn.style.display = "none";
@@ -819,11 +839,11 @@
 
       if (audioUrl) {
         currentAudio = new Audio(audioUrl);
+        playAudioBtn.style.display = "inline-flex";
         playAudioBtn.disabled = false;
-        replayAudioBtn.disabled = false;
       } else {
+        playAudioBtn.style.display = "none";
         playAudioBtn.disabled = true;
-        replayAudioBtn.disabled = true;
       }
     }
 
@@ -886,12 +906,6 @@
       if (currentAudio) currentAudio.play();
     });
 
-    replayAudioBtn.addEventListener("click", () => {
-      if (currentAudio) {
-        currentAudio.currentTime = 0;
-        currentAudio.play();
-      }
-    });
 
     startBtn.addEventListener("click", () => {
       renderMap();
