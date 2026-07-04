@@ -220,11 +220,11 @@
 
       { id:"hotel", label:"Albergo", x:29, y:68, unlocked:false, instructions:["look","listen","choose"], image:"img/ricezione.png", audio:"audio/chiave.mp3", question:"Cosa dici?", options:[{text:"La chiave, per favore.",correct:true,feedback:"Sì."},{text:"Il tavolo, per favore.",correct:false,feedback:"No."},{text:"La lampada, per favore.",correct:false,feedback:"No."}], next:"camera1" },
 
-      { id:"camera1", label:"Camera", x:29, y:68, unlocked:false, instructions:["look","choose"], image:"img/camera.png", audio:"", question:"Cos'è?", highlight:{left:21,top:55,width:50,height:31}, options:[{text:"il letto",correct:true,feedback:"Sì."},{text:"la lampada",correct:false,feedback:"No."},{text:"il tavolo",correct:false,feedback:"No."}], next:"camera2" },
+      { id:"camera1", label:"Camera", x:29, y:68, unlocked:false, instructions:["look","choose"], image:"img/camera_originale.png", audio:"", question:"Cos'è?", highlight:{left:21,top:55,width:50,height:31}, options:[{text:"il letto",correct:true,feedback:"Sì."},{text:"la lampada",correct:false,feedback:"No."},{text:"il tavolo",correct:false,feedback:"No."}], next:"camera2" },
 
       { id:"camera2", label:"Lampada", x:29, y:68, unlocked:false, instructions:["look","choose"], image:"img/camera.png", audio:"", question:"Dov'è la lampada?", highlight:{left:6.8,top:56.5,width:7,height:15}, options:[{text:"a sinistra",correct:true,feedback:"Sì."},{text:"a destra",correct:false,feedback:"No."},{text:"vicino alla porta",correct:false,feedback:"No."}], next:"camera3" },
 
-      { id:"camera3", label:"Oggetti", x:29, y:68, unlocked:false, instructions:["look","choose"], image:"img/camera.png", audio:"", question:"Che cosa vedi?", options:[{text:"letto · lampada · tavolo",correct:true,feedback:"Sì."},{text:"vaporetto · piazza · campanile",correct:false,feedback:"No."},{text:"ponte · basilica · albergo",correct:false,feedback:"No."}], next:"vaporetto" },
+      { id:"camera3", label:"Oggetti", x:29, y:68, unlocked:false, instructions:["look","choose"], image:"img/camera_originale.png", audio:"", question:"Che cosa vedi?", options:[{text:"letto · lampada · tavolo",correct:true,feedback:"Sì."},{text:"vaporetto · piazza · campanile",correct:false,feedback:"No."},{text:"ponte · basilica · albergo",correct:false,feedback:"No."}], next:"vaporetto" },
 
       { id:"vaporetto", label:"San Zaccaria", x:82, y:78, unlocked:false, instructions:["look","listen","choose"], image:"img/fermata.png", audio:"audio/tre.mp3", question:"Che numero senti?", options:[{text:"tre",correct:true,feedback:"Sì."},{text:"dieci",correct:false,feedback:"No."},{text:"otto",correct:false,feedback:"No."}], next:"sospiri" },
 
