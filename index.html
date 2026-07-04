@@ -5,82 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Scenario Demo - Kickoff Meeting</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 0 20px;
-      line-height: 1.6;
-      color: #222;
-    }
-
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; line-height: 1.6; color: #222; }
     h1 { font-size: 28px; margin-bottom: 8px; }
     h2 { font-size: 20px; margin-top: 32px; margin-bottom: 12px; }
-
-    .card {
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 20px;
-      margin-top: 20px;
-      background: #fafafa;
-    }
-
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 20px; margin-top: 20px; background: #fafafa; }
     .scenario-text { margin-bottom: 20px; white-space: pre-line; }
-
-    .option-btn {
-      display: block;
-      width: 100%;
-      text-align: left;
-      margin: 10px 0;
-      padding: 14px 16px;
-      border: 1px solid #bbb;
-      border-radius: 10px;
-      background: white;
-      cursor: pointer;
-      font-size: 16px;
-    }
+    .option-btn { display: block; width: 100%; text-align: left; margin: 10px 0; padding: 14px 16px; border: 1px solid #bbb; border-radius: 10px; background: white; cursor: pointer; font-size: 16px; }
     .option-btn:hover { background: #f2f2f2; }
-
-    .feedback {
-      margin-top: 24px;
-      padding: 16px;
-      border-left: 4px solid #666;
-      background: #f5f5f5;
-      border-radius: 6px;
-      display: none;
-      white-space: pre-line;
-    }
-
-    .controls {
-      margin-top: 20px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .secondary-btn {
-      padding: 10px 16px;
-      border: 1px solid #888;
-      border-radius: 8px;
-      background: white;
-      cursor: pointer;
-      font-size: 15px;
-    }
+    .feedback { margin-top: 12px; padding: 16px; border-left: 4px solid #666; background: #f5f5f5; border-radius: 6px; display: none; white-space: pre-line; }
+    .feedback.complete { border-left-color: #2d6a4f; background: #f1f8f4; }
+    .demo-complete { margin-top: 18px; padding: 14px 16px; border-radius: 8px; background: #fff; border: 1px solid #c8dfd2; font-weight: bold; color: #2d6a4f; }
+    .controls { margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .secondary-btn { padding: 10px 16px; border: 1px solid #888; border-radius: 8px; background: white; cursor: pointer; font-size: 15px; }
     .secondary-btn:hover { background: #f2f2f2; }
-
     .meta { color: #666; font-size: 15px; margin-top: 0; }
-
     .help-title { margin-top: 28px; margin-bottom: 8px; font-weight: bold; }
-
-    .help-box {
-      margin-top: 14px;
-      padding: 16px;
-      border-left: 4px solid #2d6a4f;
-      background: #f1f8f4;
-      border-radius: 6px;
-      display: none;
-      white-space: pre-line;
-    }
+    .help-box { margin-top: 14px; padding: 16px; border-left: 4px solid #2d6a4f; background: #f1f8f4; border-radius: 6px; display: none; white-space: pre-line; }
   </style>
 </head>
 <body>
@@ -89,7 +29,6 @@
 
   <div class="card">
     <h2>Scenario 1</h2>
-
     <div class="scenario-text" id="scenarioText"></div>
 
     <h2>Decision</h2>
@@ -97,14 +36,10 @@
 
     <div id="optionsContainer"></div>
 
-   <h2 id="feedbackTitle" style="display:none;">
-  What happens if you choose this option?
-</h2>
-
-<div class="feedback" id="feedbackBox"></div>
+    <h2 id="feedbackTitle" style="display:none;">What happens if you choose this option?</h2>
+    <div class="feedback" id="feedbackBox"></div>
 
     <div class="help-title">Need help?</div>
-
     <div class="controls">
       <button class="secondary-btn" onclick="showSOP()">SOP</button>
       <button class="secondary-btn" onclick="showJobAid()">Job Aid</button>
@@ -120,7 +55,6 @@
 
   <script>
     const scenario = {
-      title: "Scenario 1",
       text:
 `You’re preparing for a kickoff meeting with a new SME client.
 
@@ -132,10 +66,10 @@ A few minutes later, the client replies:
 You’ve seen this before. Many clients say this but arrive unprepared.`,
       decision: "What do you write in your follow-up email?",
       options: [
-
         {
           label: "C",
           text: "Please review the summary before our next meeting and come prepared with your thoughts.",
+          complete: false,
           consequence:
 `Before the meeting, the client replies:
 “Thanks, looks good.”
@@ -148,6 +82,7 @@ At the meeting:
         {
           label: "A",
           text: "Before our next meeting, please review the summary (pages 2–3) and send one key question or comment. We’ll use this to define the next steps together.",
+          complete: true,
           consequence:
 `Before the meeting, the client writes:
 “I have a question about how the testing phase fits into our workflow.”
@@ -158,6 +93,7 @@ At the meeting:
         {
           label: "B",
           text: "Before our next meeting, please review pages 2–3. We’ll build on this during our discussion.",
+          complete: false,
           consequence:
 `Before the meeting, the client replies:
 “I reviewed the summary. I think the focus is on testing the solution in our workflow.”
@@ -168,10 +104,10 @@ At the meeting:
 When you ask about details, they hesitate:
 “I’m not sure how the timeline fits into this part.”`
         },
-        
         {
           label: "D",
           text: "Thank you for the meeting. I’ll send a summary shortly so we can continue next time.",
+          complete: false,
           consequence:
 `No response before the meeting.
 
@@ -184,6 +120,7 @@ At the next meeting:
     const scenarioText = document.getElementById("scenarioText");
     const decisionText = document.getElementById("decisionText");
     const optionsContainer = document.getElementById("optionsContainer");
+    const feedbackTitle = document.getElementById("feedbackTitle");
     const feedbackBox = document.getElementById("feedbackBox");
     const helpBox = document.getElementById("helpBox");
 
@@ -191,12 +128,14 @@ At the next meeting:
       scenarioText.textContent = scenario.text;
       decisionText.textContent = scenario.decision;
       optionsContainer.innerHTML = "";
+      feedbackTitle.style.display = "none";
       feedbackBox.style.display = "none";
-      feedbackBox.textContent = "";
+      feedbackBox.classList.remove("complete");
+      feedbackBox.innerHTML = "";
       helpBox.style.display = "none";
       helpBox.textContent = "";
 
-    const shuffledOptions = [...scenario.options].sort(() => Math.random() - 0.5);
+      const shuffledOptions = [...scenario.options].sort(() => Math.random() - 0.5);
 
       shuffledOptions.forEach((option) => {
         const button = document.createElement("button");
@@ -205,13 +144,21 @@ At the next meeting:
         button.onclick = () => showConsequence(option);
         optionsContainer.appendChild(button);
       });
-   function showConsequence(option) {
+    }
 
-  document.getElementById("feedbackTitle").style.display = "block";
+    function showConsequence(option) {
+      feedbackTitle.style.display = "block";
+      feedbackBox.style.display = "block";
+      feedbackBox.classList.toggle("complete", option.complete);
 
-  feedbackBox.style.display = "block";
-  feedbackBox.textContent = option.consequence;
-}
+      if (option.complete) {
+        feedbackBox.innerHTML =
+          option.consequence.replace(/\n/g, "<br>") +
+          `<div class="demo-complete">Demo complete: the client arrives prepared, and the kickoff meeting can move directly into a useful discussion.</div>`;
+      } else {
+        feedbackBox.textContent = option.consequence;
+      }
+    }
 
     function showSOP() {
       helpBox.style.display = "block";
