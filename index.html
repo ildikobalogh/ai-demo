@@ -97,7 +97,11 @@
 
     <div id="optionsContainer"></div>
 
-    <div class="feedback" id="feedbackBox"></div>
+   <h2 id="feedbackTitle" style="display:none;">
+  What happens if you choose this option?
+</h2>
+
+<div class="feedback" id="feedbackBox"></div>
 
     <div class="help-title">Need help?</div>
 
@@ -128,6 +132,19 @@ A few minutes later, the client replies:
 You’ve seen this before. Many clients say this but arrive unprepared.`,
       decision: "What do you write in your follow-up email?",
       options: [
+
+        {
+          label: "C",
+          text: "Please review the summary before our next meeting and come prepared with your thoughts.",
+          consequence:
+`Before the meeting, the client replies:
+“Thanks, looks good.”
+
+At the meeting:
+“Yes, I looked at it.”
+
+“I think I understand the general idea, but I’m not sure how the steps connect.”`
+        },
         {
           label: "A",
           text: "Before our next meeting, please review the summary (pages 2–3) and send one key question or comment. We’ll use this to define the next steps together.",
@@ -151,18 +168,7 @@ At the meeting:
 When you ask about details, they hesitate:
 “I’m not sure how the timeline fits into this part.”`
         },
-        {
-          label: "C",
-          text: "Please review the summary before our next meeting and come prepared with your thoughts.",
-          consequence:
-`Before the meeting, the client replies:
-“Thanks, looks good.”
-
-At the meeting:
-“Yes, I looked at it.”
-
-“I think I understand the general idea, but I’m not sure how the steps connect.”`
-        },
+        
         {
           label: "D",
           text: "Thank you for the meeting. I’ll send a summary shortly so we can continue next time.",
@@ -190,19 +196,22 @@ At the next meeting:
       helpBox.style.display = "none";
       helpBox.textContent = "";
 
-      scenario.options.forEach((option) => {
+    const shuffledOptions = [...scenario.options].sort(() => Math.random() - 0.5);
+
+      shuffledOptions.forEach((option) => {
         const button = document.createElement("button");
         button.className = "option-btn";
         button.innerHTML = "<strong>" + option.label + "</strong> " + option.text;
         button.onclick = () => showConsequence(option);
         optionsContainer.appendChild(button);
       });
-    }
+   function showConsequence(option) {
 
-    function showConsequence(option) {
-      feedbackBox.style.display = "block";
-      feedbackBox.textContent = option.consequence;
-    }
+  document.getElementById("feedbackTitle").style.display = "block";
+
+  feedbackBox.style.display = "block";
+  feedbackBox.textContent = option.consequence;
+}
 
     function showSOP() {
       helpBox.style.display = "block";
