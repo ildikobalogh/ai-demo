@@ -262,7 +262,14 @@
 
         b.innerHTML=`<img src="${hintData[k].image}" class="icon" alt=""> ${k==="look"?"Guarda":k==="listen"?"Ascolta":"Scegli"}`;
 
-        b.addEventListener("click",()=>showHint(k));
+        b.addEventListener("click", () => {
+    if (k === "listen" && currentAudio) {
+        currentAudio.currentTime = 0;
+        currentAudio.play();
+    } else {
+        showHint(k);
+    }
+});
 
         bar.appendChild(b);
 
