@@ -1,31 +1,160 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scenario Demo - Kickoff Meeting</title>
+
   <style>
-    body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; line-height: 1.6; color: #222; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.6;
+      color: #222;
+    }
+
     h1 { font-size: 28px; margin-bottom: 8px; }
     h2 { font-size: 20px; margin-top: 32px; margin-bottom: 12px; }
-    .card { border: 1px solid #ddd; border-radius: 12px; padding: 20px; margin-top: 20px; background: #fafafa; }
-    .scenario-text { margin-bottom: 20px; white-space: pre-line; }
-    .option-btn { display: block; width: 100%; text-align: left; margin: 10px 0; padding: 14px 16px; border: 1px solid #bbb; border-radius: 10px; background: white; cursor: pointer; font-size: 16px; }
-    .option-btn:hover { background: #f2f2f2; }
-    .feedback { margin-top: 12px; padding: 16px; border-left: 4px solid #666; background: #f5f5f5; border-radius: 6px; display: none; white-space: pre-line; }
-    .feedback.complete { border-left-color: #2d6a4f; background: #f1f8f4; }
-    .demo-complete { margin-top: 18px; padding: 14px 16px; border-radius: 8px; background: #fff; border: 1px solid #c8dfd2; font-weight: bold; color: #2d6a4f; }
-    .controls { margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
-    .secondary-btn { padding: 10px 16px; border: 1px solid #888; border-radius: 8px; background: white; cursor: pointer; font-size: 15px; }
-    .secondary-btn:hover { background: #f2f2f2; }
-    .meta { color: #666; font-size: 15px; margin-top: 0; }
-    .help-title { margin-top: 28px; margin-bottom: 8px; font-weight: bold; }
-    .help-box { margin-top: 14px; padding: 16px; border-left: 4px solid #2d6a4f; background: #f1f8f4; border-radius: 6px; display: none; white-space: pre-line; }
+
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      background: #fafafa;
+    }
+
+    .scenario-text {
+      margin-bottom: 20px;
+      white-space: pre-line;
+    }
+
+    .option-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 10px 0;
+      padding: 14px 16px;
+      border: 1px solid #bbb;
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      font-size: 16px;
+      color: #222;
+      line-height: 1.5;
+    }
+
+    .option-btn:hover,
+    .option-btn:focus {
+      background: #f2f2f2;
+    }
+
+    .feedback {
+      margin-top: 12px;
+      padding: 16px;
+      border-left: 4px solid #777;
+      background: #f5f5f5;
+      border-radius: 6px;
+      display: none;
+    }
+
+    .feedback.complete {
+      border-left-color: #2d6a4f;
+      background: #f1f8f4;
+    }
+
+    .consequence {
+      white-space: pre-line;
+    }
+
+    .feedback-section {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid #d5d5d5;
+    }
+
+    .feedback-section h3 {
+      font-size: 17px;
+      margin: 0 0 6px;
+    }
+
+    .feedback-section p {
+      margin: 0 0 12px;
+    }
+
+    .demo-complete {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 8px;
+      background: white;
+      border: 1px solid #c8dfd2;
+      font-weight: bold;
+      color: #2d6a4f;
+    }
+
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .secondary-btn {
+      padding: 10px 16px;
+      border: 1px solid #888;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .secondary-btn:hover {
+      background: #f2f2f2;
+    }
+
+    .meta {
+      color: #666;
+      font-size: 15px;
+      margin-top: 0;
+    }
+
+    .help-title {
+      margin-top: 28px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .help-box {
+      margin-top: 14px;
+      padding: 16px;
+      border-left: 4px solid #2d6a4f;
+      background: #f1f8f4;
+      border-radius: 6px;
+      display: none;
+      white-space: pre-line;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        margin: 20px auto;
+        padding: 0 12px;
+      }
+
+      .card { padding: 15px; }
+      h1 { font-size: 24px; }
+      .option-btn { padding: 12px; }
+    }
   </style>
 </head>
+
 <body>
   <h1>Scenario-Based Learning Demo</h1>
-  <p class="meta">Project sample: improving client preparation before and after kickoff meetings</p>
+  <p class="meta">
+    Project sample: improving client preparation before and after kickoff meetings
+  </p>
 
   <div class="card">
     <h2>Scenario 1</h2>
@@ -36,27 +165,36 @@
 
     <div id="optionsContainer"></div>
 
-    <h2 id="feedbackTitle" style="display:none;">What happens if you choose this option?</h2>
-    <div class="feedback" id="feedbackBox"></div>
+    <h2 id="feedbackTitle" style="display:none;">
+      Feedback: Understanding the impact of your choice
+    </h2>
+
+    <div
+      class="feedback"
+      id="feedbackBox"
+      aria-live="polite"
+    ></div>
 
     <div class="help-title">Need help?</div>
+
     <div class="controls">
-      <button class="secondary-btn" onclick="showSOP()">SOP</button>
-      <button class="secondary-btn" onclick="showJobAid()">Job Aid</button>
-      <button class="secondary-btn" onclick="showAICoach()">AI Coach</button>
+      <button class="secondary-btn" type="button" onclick="showSOP()">SOP</button>
+      <button class="secondary-btn" type="button" onclick="showJobAid()">Job Aid</button>
+      <button class="secondary-btn" type="button" onclick="showAICoach()">AI Coach</button>
     </div>
 
-    <div class="help-box" id="helpBox"></div>
+    <div class="help-box" id="helpBox" aria-live="polite"></div>
 
     <div class="controls">
-      <button class="secondary-btn" onclick="resetScenario()">Try again</button>
+      <button class="secondary-btn" type="button" onclick="resetScenario()">
+        Try again
+      </button>
     </div>
   </div>
 
   <script>
     const scenario = {
-      text:
-`You’re preparing for a kickoff meeting with a new SME client.
+      text: `You’re preparing for a kickoff meeting with a new SME client.
 
 You send the project documentation in advance.
 
@@ -64,55 +202,76 @@ A few minutes later, the client replies:
 “Thanks, I’ll take a look before the meeting.”
 
 You’ve seen this before. Many clients say this but arrive unprepared.`,
+
       decision: "What do you write in your follow-up email?",
+
       options: [
         {
           label: "C",
           text: "Please review the summary before our next meeting and come prepared with your thoughts.",
           complete: false,
-          consequence:
-`Before the meeting, the client replies:
+
+          consequence: `Before the meeting, the client replies:
 “Thanks, looks good.”
 
 At the meeting:
 “Yes, I looked at it.”
 
-“I think I understand the general idea, but I’m not sure how the steps connect.”`
+“I think I understand the general idea, but I’m not sure how the steps connect.”`,
+
+          feedbackHeading: "Why it is less effective",
+          feedbackText: "The request is too general. The client can read the summary without preparing a specific contribution, so gaps in understanding may only emerge during the meeting.",
+          improvement: "How to improve it: Identify the section to review and ask the client to send one specific question or comment before the meeting."
         },
+
         {
           label: "A",
           text: "Before our next meeting, please review the summary (pages 2–3) and send one key question or comment. We’ll use this to define the next steps together.",
           complete: true,
-          consequence:
-`Before the meeting, the client writes:
+
+          consequence: `Before the meeting, the client writes:
 “I have a question about how the testing phase fits into our workflow.”
 
 At the meeting:
-“So based on page 3, I think we need to focus on implementation timing. Is that correct?”`
+“So based on page 3, I think we need to focus on implementation timing. Is that correct?”`,
+
+          feedbackHeading: "Why it works",
+          feedbackText: "The message identifies exactly what the client should review and asks for a concrete contribution before the meeting.",
+          improvement: "Key principle: Effective follow-up messages define a clear action, a specific deliverable, and a purpose for the next meeting."
         },
+
         {
           label: "B",
           text: "Before our next meeting, please review pages 2–3. We’ll build on this during our discussion.",
           complete: false,
-          consequence:
-`Before the meeting, the client replies:
+
+          consequence: `Before the meeting, the client replies:
 “I reviewed the summary. I think the focus is on testing the solution in our workflow.”
 
 At the meeting:
 “From what I understood, the goal is to test the solution and then move to implementation, right?”
 
 When you ask about details, they hesitate:
-“I’m not sure how the timeline fits into this part.”`
+“I’m not sure how the timeline fits into this part.”`,
+
+          feedbackHeading: "Why it is less effective",
+          feedbackText: "The message specifies what to read, but it does not ask the client to prepare a question, comment, or other contribution. Reviewing the material may therefore remain passive.",
+          improvement: "How to improve it: Ask the client to send one key question or comment and explain how that input will be used in the meeting."
         },
+
         {
           label: "D",
           text: "Thank you for the meeting. I’ll send a summary shortly so we can continue next time.",
           complete: false,
-          consequence:
-`No response before the meeting.
+
+          consequence: `No response before the meeting.
 
 At the next meeting:
-“Could you quickly go over what we agreed on last time?”`
+“Could you quickly go over what we agreed on last time?”`,
+
+          feedbackHeading: "Why it is less effective",
+          feedbackText: "This message refers to a meeting that has already happened and promises a summary. It does not ask the client to review the current project documentation or prepare for the upcoming discussion.",
+          improvement: "How to improve it: Give a forward-looking instruction, name the material to review, and request one concrete response before the next meeting."
         }
       ]
     };
@@ -127,21 +286,38 @@ At the next meeting:
     function renderScenario() {
       scenarioText.textContent = scenario.text;
       decisionText.textContent = scenario.decision;
-      optionsContainer.innerHTML = "";
+
+      optionsContainer.replaceChildren();
+
       feedbackTitle.style.display = "none";
       feedbackBox.style.display = "none";
       feedbackBox.classList.remove("complete");
-      feedbackBox.innerHTML = "";
+      feedbackBox.replaceChildren();
+
       helpBox.style.display = "none";
       helpBox.textContent = "";
 
-      const shuffledOptions = [...scenario.options].sort(() => Math.random() - 0.5);
+      const shuffledOptions = [...scenario.options];
+
+      // Shuffle the answer options.
+      for (let i = shuffledOptions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledOptions[i], shuffledOptions[j]] =
+          [shuffledOptions[j], shuffledOptions[i]];
+      }
 
       shuffledOptions.forEach((option) => {
         const button = document.createElement("button");
+        button.type = "button";
         button.className = "option-btn";
-        button.innerHTML = "<strong>" + option.label + "</strong> " + option.text;
-        button.onclick = () => showConsequence(option);
+
+        const label = document.createElement("strong");
+        label.textContent = option.label + ". ";
+        button.appendChild(label);
+        button.appendChild(document.createTextNode(option.text));
+
+        button.addEventListener("click", () => showConsequence(option));
+
         optionsContainer.appendChild(button);
       });
     }
@@ -150,57 +326,88 @@ At the next meeting:
       feedbackTitle.style.display = "block";
       feedbackBox.style.display = "block";
       feedbackBox.classList.toggle("complete", option.complete);
+      feedbackBox.replaceChildren();
+
+      const consequence = document.createElement("p");
+      consequence.className = "consequence";
+      consequence.textContent = option.consequence;
+      feedbackBox.appendChild(consequence);
+
+      const explanation = document.createElement("div");
+      explanation.className = "feedback-section";
+
+      const heading = document.createElement("h3");
+      heading.textContent = option.feedbackHeading;
+      explanation.appendChild(heading);
+
+      const rationale = document.createElement("p");
+      rationale.textContent = option.feedbackText;
+      explanation.appendChild(rationale);
+
+      const improvement = document.createElement("p");
+      improvement.textContent = option.improvement;
+      explanation.appendChild(improvement);
+
+      feedbackBox.appendChild(explanation);
 
       if (option.complete) {
-        feedbackBox.innerHTML =
-          option.consequence.replace(/\n/g, "<br>") +
-          `<div class="demo-complete">Demo complete: the client arrives prepared, and the kickoff meeting can move directly into a useful discussion.</div>`;
-      } else {
-        feedbackBox.textContent = option.consequence;
+        const completion = document.createElement("div");
+        completion.className = "demo-complete";
+        completion.textContent =
+          "Demo complete: the client arrives prepared, and the kickoff meeting can move directly into a useful discussion.";
+        feedbackBox.appendChild(completion);
       }
+
+      feedbackBox.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+      });
+    }
+
+    function showHelp(content) {
+      helpBox.textContent = content;
+      helpBox.style.display = "block";
     }
 
     function showSOP() {
-      helpBox.style.display = "block";
-      helpBox.textContent =
-`SOP: Pre-meeting communication process
+      showHelp(`SOP: Pre-meeting communication process
 
 1. Send the project document in advance.
 2. Specify which sections to review.
-3. Require one concrete question or comment.
-4. Frame the meeting as a discussion.
-5. Use the client’s response to guide next steps.`;
+3. Request one concrete question or comment.
+4. Explain the purpose of the upcoming discussion.
+5. Use the client’s response to guide next steps.`);
     }
 
     function showJobAid() {
-      helpBox.style.display = "block";
-      helpBox.textContent =
-`Job Aid: Quick checklist
+      showHelp(`Job Aid: Quick checklist
 
-- Tell the client what to read
-- Ask for one specific response
-- Set expectation for discussion
-- Avoid re-explaining everything
-- Use their input to move forward`;
+- Specify what the client should read.
+- Ask for one specific response.
+- Explain the purpose of the meeting.
+- Avoid relying on passive preparation.
+- Use the client’s input to move the project forward.`);
     }
 
     function showAICoach() {
-      helpBox.style.display = "block";
-      helpBox.textContent =
-`AI Coach (simulated)
+      showHelp(`AI Coach (simulated)
 
-Strong messages usually:
-- narrow the reading task
-- require a visible response
-- define the purpose of the meeting
+This prototype uses predefined guidance, not a live AI model.
 
-If the client can prepare passively, they often will.`;
+Strong follow-up messages usually:
+- define a specific reading task;
+- request a visible contribution;
+- explain the purpose of the next meeting.
+
+Reflection question:
+Does your message make it clear what the client must prepare before the meeting?`);
     }
 
     function resetScenario() {
       renderScenario();
     }
 
+    // Display the scenario when the page loads.
     renderScenario();
   </script>
 </body>
